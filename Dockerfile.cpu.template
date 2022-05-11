@@ -1,31 +1,9 @@
-FROM ubuntu:UBUNTU_VERSION
-
-COPY ./superupdate.sh superupdate.sh
-RUN bash ./superupdate.sh cn
-
-# System packages 
-RUN apt-get --allow-releaseinfo-change update && apt-get install -yq cmake curl wget jq vim && rm -rf /var/lib/apt/lists/*
-
-# Use the above args during building https://docs.docker.com/engine/reference/builder/#understand-how-arg-and-from-interact
-# Install miniconda to /miniconda
-RUN curl -LO "http://repo.continuum.io/miniconda/Miniconda3-CONDA_VERSION-Linux-OS_TYPE.sh" && \
-    bash Miniconda3-CONDA_VERSION-Linux-OS_TYPE.sh -p /miniconda -b && \
-    rm Miniconda3-CONDA_VERSION-Linux-OS_TYPE.sh
-ENV PATH=/miniconda/bin:${PATH}
-
-# Change conda channels when you need
-COPY ./condarc /root/.condarc
-RUN    conda clean -i && \
-       conda config --set allow_conda_downgrades true && \
-       conda info
+FROM neofung/miniconda:VERSION-conda_CONDA_VERSION-py_PYTHON_VERSION
 
 # Install packages from conda and downgrade py (optional).
-RUN conda install -c anaconda -y python=PYTHON_VERSION && \
-    conda clean -yfa
+RUN /opt/conda/bin/conda install -c anaconda tensorflow-mkl=TENSORFLOW_VERSION  && \
+    /opt/conda/bin/conda install -c pytorch -y pytorch==PYTORCH_VERSION cpuonly && \
+    /opt/conda/bin/conda clean -yfa
 
-RUN conda install -c anaconda -y tensorflow-mkl=TENSORFLOW_VERSION  && \
-    conda install -c pytorch -y pytorch==PYTORCH_VERSION cpuonly && \
-    conda clean -yfa
-
-# some devs like to let it hang https://stackoverflow.com/a/42873832/868736
-# ENTRYPOINT ["tail", "-f", "/dev/null"]
+SHELL ["conda", "run", "-n", "base", "/bin/bash", "-c"]
+RUN /opt/conda/bin/conda env export --no-builds
