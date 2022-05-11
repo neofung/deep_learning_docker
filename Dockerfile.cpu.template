@@ -1,8 +1,10 @@
 FROM neofung/miniconda:VERSION-conda_CONDA_VERSION-py_PYTHON_VERSION
 
 # Install packages from conda and downgrade py (optional).
-RUN /opt/conda/bin/conda install -c anaconda tensorflow-mkl=TENSORFLOW_VERSION  && \
-    /opt/conda/bin/conda install -c pytorch -y pytorch==PYTORCH_VERSION cpuonly && \
+RUN /opt/conda/bin/conda install -c pytorch -y pytorch==PYTORCH_VERSION cpuonly && \
+    /opt/conda/bin/conda clean -yfa
+
+RUN /opt/conda/bin/conda install -c intel -y tensorflow=TENSORFLOW_VERSION  && \
     /opt/conda/bin/conda clean -yfa
 
 SHELL ["conda", "run", "-n", "base", "/bin/bash", "-c"]
