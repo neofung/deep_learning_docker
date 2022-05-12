@@ -2,6 +2,7 @@ FROM neofung/miniconda:VERSION-conda_CONDA_VERSION-py_PYTHON_VERSION
 
 # Install packages from conda and downgrade py (optional).
 RUN /opt/conda/bin/conda install -c pytorch -y pytorch==PYTORCH_VERSION cpuonly && \
+    pip --no-cache-dir install future==0.18.2 && \
     /opt/conda/bin/conda clean -yfa
 
 # Install tensorflow
