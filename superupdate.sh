@@ -153,14 +153,17 @@ setAWS(){
 
 setCn(){
 	sed -i 's/cdn-fastly.deb.debian.org/mirrors.ustc.edu.cn/'g /etc/apt/sources.list
+	sed -i 's/mirrors.aliyun.com/mirrors.ustc.edu.cn/'g /etc/apt/sources.list
 }
 
 set163(){
 	sed -i 's/cdn-fastly.deb.debian.org/mirrors.163.com/'g /etc/apt/sources.list
+	sed -i 's/mirrors.aliyun.com/mirrors.163.cn/'g /etc/apt/sources.list
 }
 
 setAliyun(){
 	sed -i 's/cdn-fastly.deb.debian.org/mirrors.aliyun.com/'g /etc/apt/sources.list
+	sed -i 's/mirrors.aliyun.com/mirrors.aliyun.cn/'g /etc/apt/sources.list
 }
 
 restore(){
@@ -199,6 +202,8 @@ setSources(){
 			case $para in
 				'restore'|'-restore'|'--restore' )
 					restore;;
+			        'cn'|'-cn'|'--cn' )
+					setUbuntu;setCn;;
 			*)
 			setUbuntu;
 			esac
