@@ -1,0 +1,8 @@
+channels:
+- anaconda
+- defaults
+dependencies:
+- conda=4.12.0
+- anaconda::python=3.7.7
+- pip:
+  - pyyaml==6.0

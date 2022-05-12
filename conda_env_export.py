@@ -51,7 +51,8 @@ def _get_pip_deps(full_deps):
 def _combine_env_data(env_data_full, env_data_hist):
     deps_full = env_data_full['dependencies']
     deps_hist = env_data_hist['dependencies']
-    deps = [dep for dep in deps_full if _is_history_dep(dep, deps_hist)]
+    deps_hist_name_only = [re.sub(r'=.*', '', t) for t in deps_hist]
+    deps = [dep for dep in deps_full if _is_history_dep(dep, deps_hist_name_only)]
 
     pip_deps = _get_pip_deps(deps_full)
 
