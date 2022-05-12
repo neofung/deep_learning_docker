@@ -8,6 +8,8 @@ RUN /opt/conda/bin/conda install -c pytorch -y pytorch==PYTORCH_VERSION cpuonly 
 # Install tensorflow
 #RUN /opt/conda/bin/conda install -c intel -y tensorflow=TENSORFLOW_VERSION  && \
 #    /opt/conda/bin/conda clean -yfa
-RUN pip --no-cache-dir install intel-tensorflow-avx512==TENSORFLOW_VERSION  flatbuffers==1.12.0
+# Intel MKL support
+# RUN pip --no-cache-dir install intel-tensorflow-avx512==TENSORFLOW_VERSION  flatbuffers==1.12.0
+RUN pip --no-cache-dir install tensorflow==TENSORFLOW_VERSION  flatbuffers==1.12.0
 
 SHELL ["conda", "run", "-n", "base", "/bin/bash", "-c"]
