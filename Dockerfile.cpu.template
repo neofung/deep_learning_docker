@@ -1,15 +1,31 @@
 FROM neofung/miniconda:VERSION-conda_CONDA_VERSION-py_PYTHON_VERSION
 
 # Install packages from conda and downgrade py (optional).
-RUN /opt/conda/bin/conda install -c pytorch -y pytorch==PYTORCH_VERSION cpuonly && \
-    pip --no-cache-dir install future==0.18.2 && \
+RUN /opt/conda/bin/conda install -c pytorch -y pytorch==PYTORCH_VERSION torchvision==TORCHVISION_VERSION cpuonly && \
+    pip --no-cache-dir install future==0.18.2 numpy==1.20.2 && \
     /opt/conda/bin/conda clean -yfa
 
-# Install tensorflow
-#RUN /opt/conda/bin/conda install -c intel -y tensorflow=TENSORFLOW_VERSION  && \
-#    /opt/conda/bin/conda clean -yfa
-# Intel MKL support
-# RUN pip --no-cache-dir install intel-tensorflow-avx512==TENSORFLOW_VERSION  flatbuffers==1.12.0
-RUN pip --no-cache-dir install tensorflow==TENSORFLOW_VERSION  flatbuffers==1.12.0
+COPY aoc*.tar* /root/
+
+RUN apt-get update && apt-get -y install sudo dmidecode hwloc && rm -rf /var/lib/apt/lists/*
+
+RUN cd /root/ && \
+    tar -xvf aocl-linux-aocc-3.1.0.tar.gz && \
+    cd aocl-linux-aocc-3.1.0 && \
+    tar -xvf /root/aocl-blis-linux-aocc-3.1.0.tar.gz && \
+    /bin/bash install.sh && \
+    echo "source /root/amd/aocl/3.1.0/amd-libs.cfg" >> /root/.bashrc && \
+    rm -rf /root/aocl*.tar* 
+
+RUN cd /root/ && \
+    tar -xvf  aocc-compiler-3.2.0.tar && \
+    cd aocc-compiler-3.2.0 && \
+    /bin/bash install.sh && \
+    echo "source /root/setenv_AOCC.sh" >> /root/.bashrc && \
+    rm -rf /root/aocc-compiler-3.2.0.tar
+
+ENV ZENDNN_BLIS_PATH=/root/amd/aocl/3.1.0 ZENDNN_AOCC_COMP_PATH=/root/aocc-compiler-3.2.0
+
+ENV LD_LIBRARY_PATH=/workspace/PT_v1.9.0_ZenDNN_v3.2_Python_v3.7_2021-12-03T10/ZenDNN/_out/lib/:/workspace/PT_v1.9.0_ZenDNN_v3.2_Python_v3.7_2021-12-03T10/ZenDNN/external/googletest/lib:/root/amd/aocl/3.1.0/lib/:/root/aocc-compiler-3.2.0/lib:/root/aocc-compiler-3.2.0/lib32
 
 SHELL ["conda", "run", "-n", "base", "/bin/bash", "-c"]
