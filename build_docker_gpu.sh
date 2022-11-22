@@ -18,7 +18,8 @@ VERSION="0.0.1"
 
 CUDA_VERSION=10.1
 PYTORCH_VERSION=1.7.0
-BUILD_TYPES=("dev" "release")
+TENSORFLOW_VERSION=2.5.0
+BUILD_TYPES=("dev")
 
 DEV_IMAGE=neofung/deep_learning_gpu:latest
 
@@ -33,9 +34,10 @@ do
   sed 's#IMAGE_BASE#nvidia/cuda:'${NV_BASE_IMAGE}'#g' ./Dockerfile.gpu.template |
   sed 's#CUDA_VERSION#'${CUDA_VERSION}'#g'         |
   sed 's#PYTORCH_VERSION#'${PYTORCH_VERSION}'#g'   |
+  sed 's#TENSORFLOW_VERSION#'${TENSORFLOW_VERSION}'#g'   |
   sed 's#DEV_IMAGE#'${DEV_IMAGE}'#g'               > Dockerfile.gpu
 
   docker build ${EXTRA_ARGS} -t neofung/deep_learning_gpu_${BUILD_TYPE}:latest \
-    -t neofung/deep_learning_gpu:${VERSION}-cuda${CUDA_VERSION}-gpu-${BUILD_TYPE} -f Dockerfile.gpu  .
+    -t neofung/deep_learning_gpu:${VERSION}-cuda${CUDA_VERSION}-tf_${TENSORFLOW_VERSION}-torch_${PYTORCH_VERSION}-gpu-${BUILD_TYPE} -f Dockerfile.gpu  .
 
 done
