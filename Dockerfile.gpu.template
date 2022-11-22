@@ -4,7 +4,9 @@ COPY ./superupdate.sh superupdate.sh
 RUN bash ./superupdate.sh cn && rm -rf /var/lib/apt/lists/*
 
 # RUN sed -i s@/archive.ubuntu.com/@/mirrors.tuna.tsinghua.edu.cn/@g /etc/apt/sources.list && apt-get update && \
-RUN apt-get update && \
+RUN rm /etc/apt/sources.list.d/cuda.list && \
+    rm /etc/apt/sources.list.d/nvidia-ml.list && \
+    apt-get update && \
     apt-get install -y curl git ninja-build && rm -rf /var/lib/apt/lists/*
 
 ENV PATH=/opt/miniconda3/bin:${PATH} CONDA_PREFIX=/opt/miniconda3
@@ -18,7 +20,7 @@ RUN curl -LO https://repo.anaconda.com/miniconda/Miniconda3-py37_4.8.3-Linux-x86
     conda clean -i && \
     conda config --set allow_conda_downgrades true && \
     conda info && \
-    conda install pytorch=PYTORCH_VERSION cudatoolkit=CUDA_VERSION cudnn -c pytorch -y && \
+    conda install pytorch=PYTORCH_VERSION cudatoolkit=CUDA_VERSION cudnn=CUDNN_VERSION -c pytorch -y && \
     conda install conda-verify conda-build mkl-include cmake ninja -c anaconda -y && \
     conda clean -afy
 
