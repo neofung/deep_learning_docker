@@ -13,17 +13,16 @@ ENV PATH=/opt/miniconda3/bin:${PATH} CONDA_PREFIX=/opt/miniconda3
 
 COPY ./condarc /root/.condarc
 
-# RUN curl -LO https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda/Miniconda3-py37_4.8.3-Linux-x86_64.sh && \
-RUN curl -LO https://repo.anaconda.com/miniconda/Miniconda3-py37_4.8.3-Linux-x86_64.sh && \
-    bash Miniconda3-py37_4.8.3-Linux-x86_64.sh -p /opt/miniconda3 -b && \
-    rm Miniconda3-py37_4.8.3-Linux-x86_64.sh && \
+RUN curl -LO MINICONDA_DOWNLOAD_URL && \
+    bash Miniconda3-MINICONDA_VERSION.sh -p /opt/miniconda3 -b && \
+    rm Miniconda3-MINICONDA_VERSION.sh && \
     conda clean -i && \
     conda config --set allow_conda_downgrades true && \
     conda info && \
     conda install pytorch=PYTORCH_VERSION cudatoolkit=CUDA_VERSION cudnn=CUDNN_VERSION -c pytorch -y && \
-    conda install conda-verify conda-build mkl-include cmake ninja -c anaconda -y && \
+    conda install conda-verify conda-build mkl-include cmake ninja tensorflow-gpu==TENSORFLOW_VERSION -c anaconda -y && \
     conda clean -afy
 
-RUN pip install --no-cache-dir OpenNMT-py==1.2.0 docopt onnxruntime-gpu==1.3.0 tensorflow-gpu==TENSORFLOW_VERSION  flatbuffers==1.12.0
+RUN pip install --no-cache-dir OpenNMT-py==1.2.0 docopt onnxruntime-gpu==1.3.0 flatbuffers==1.12.0
 
 WORKDIR /workspace

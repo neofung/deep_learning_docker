@@ -21,6 +21,9 @@ CUDNN_VERSION=7
 PYTORCH_VERSION=1.7.0
 TENSORFLOW_VERSION=2.5.0
 BUILD_TYPES=("dev")
+MINICONDA_VERSION=py37_4.9.2-Linux-x86_64
+MINICONDA_DOWNLOAD_URL=https://mirrors.bfsu.edu.cn/anaconda/miniconda/Miniconda3-${MINICONDA_VERSION}.sh
+#MINICONDA_DOWNLOAD_URL=https://repo.anaconda.com/miniconda/Miniconda3-${MINICONDA_VERSION}.sh
 
 DEV_IMAGE=neofung/deep_learning_gpu:latest
 
@@ -35,6 +38,8 @@ do
   sed 's#IMAGE_BASE#nvidia/cuda:'${NV_BASE_IMAGE}'#g' ./Dockerfile.gpu.template |
   sed 's#CUDA_VERSION#'${CUDA_VERSION}'#g'         |
   sed 's#CUDNN_VERSION#'${CUDNN_VERSION}'#g'         |
+  sed 's#MINICONDA_VERSION#'${MINICONDA_VERSION}'#g'   |
+  sed 's#MINICONDA_DOWNLOAD_URL#'${MINICONDA_DOWNLOAD_URL}'#g'   |
   sed 's#PYTORCH_VERSION#'${PYTORCH_VERSION}'#g'   |
   sed 's#TENSORFLOW_VERSION#'${TENSORFLOW_VERSION}'#g'   |
   sed 's#DEV_IMAGE#'${DEV_IMAGE}'#g'               > Dockerfile.gpu
