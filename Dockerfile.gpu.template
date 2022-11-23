@@ -5,7 +5,7 @@ RUN bash ./superupdate.sh cn && rm -rf /var/lib/apt/lists/*
 
 # RUN sed -i s@/archive.ubuntu.com/@/mirrors.tuna.tsinghua.edu.cn/@g /etc/apt/sources.list && apt-get update && \
 RUN rm /etc/apt/sources.list.d/cuda.list && \
-    rm /etc/apt/sources.list.d/nvidia-ml.list && \
+#    rm /etc/apt/sources.list.d/nvidia-ml.list && \
     apt-get update && \
     apt-get install -y curl git ninja-build && rm -rf /var/lib/apt/lists/*
 
@@ -15,12 +15,13 @@ COPY ./condarc /root/.condarc
 
 RUN curl -LO MINICONDA_DOWNLOAD_URL && \
     bash Miniconda3-MINICONDA_VERSION.sh -p /opt/miniconda3 -b && \
-    rm Miniconda3-MINICONDA_VERSION.sh && \
-    conda clean -i && \
+    rm Miniconda3-MINICONDA_VERSION.sh
+
+RUN conda clean -i && \
     conda config --set allow_conda_downgrades true && \
     conda info && \
     conda install pytorch=PYTORCH_VERSION cudatoolkit=CUDA_VERSION cudnn=CUDNN_VERSION -c pytorch -y && \
-    conda install conda-verify conda-build mkl-include cmake ninja tensorflow-gpu==TENSORFLOW_VERSION -c anaconda -y && \
+    conda install conda-verify conda-build mkl-include cmake ninja tensorflow==TENSORFLOW_VERSION -c anaconda -y && \
     conda clean -afy
 
 RUN pip install --no-cache-dir OpenNMT-py==1.2.0 docopt onnxruntime-gpu==1.3.0 flatbuffers==1.12.0
